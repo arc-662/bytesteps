@@ -3,33 +3,23 @@ import 'package:flutter/material.dart';
 class WeeklyTrackerCard extends StatelessWidget {
   WeeklyTrackerCard({super.key});
 
-  int getTodayUIIndex() {
-    int weekday = DateTime.now().weekday;
-    switch (weekday) {
-      case 1:
-        return 5; // Monday
-      case 2:
-        return 6; // Tuesday
-      case 3:
-        return 0; // Wednesday
-      case 4:
-        return 1; // Thursday
-      case 5:
-        return 2; // Friday
-      case 6:
-        return 3; // Saturday
-      case 7:
-        return 4; // Sunday
-      default:
-        return -1;
-    }
-  }
+  // Mapping Dart weekdays (Mon=1,...Sun=7) to your UI index
+  final Map<int, int> weekdayToIndex = {
+    1: 5, // Monday
+    2: 6, // Tuesday
+    3: 0, // Wednesday
+    4: 1, // Thursday
+    5: 2, // Friday
+    6: 3, // Saturday
+    7: 4, // Sunday
+  };
 
   final List<String> dayLetters = ['W', 'T', 'F', 'S', 'S', 'M', 'T'];
 
   @override
   Widget build(BuildContext context) {
-    final int todayUIIndex = getTodayUIIndex();
+    final int todayWeekday = DateTime.now().weekday;
+    final int todayUIIndex = weekdayToIndex[todayWeekday] ?? -1;
 
     return Card(
       elevation: 5,
@@ -40,8 +30,9 @@ class WeeklyTrackerCard extends StatelessWidget {
         height: MediaQuery.of(context).size.height * 0.17,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
-            color: const Color(0xFA86C3FF),
-            borderRadius: BorderRadius.circular(10)),
+          color: const Color(0xFA86C3FF),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -57,7 +48,6 @@ class WeeklyTrackerCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              // Auto generate 7 days
               children: List.generate(7, (index) {
                 return Column(
                   children: [

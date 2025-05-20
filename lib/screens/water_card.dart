@@ -44,6 +44,8 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                   onTap: () => {
                     setState(() {
                       filledGlasses = 0;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Water Intake is Now 0")));
                     })
                   },
                   child: const Text(
