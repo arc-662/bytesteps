@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
-class WaterTrackerCard extends StatelessWidget {
+class WaterTrackerCard extends StatefulWidget {
   const WaterTrackerCard({super.key});
+
+  @override
+  State<WaterTrackerCard> createState() => _WaterTrackerCardState();
+}
+
+class _WaterTrackerCardState extends State<WaterTrackerCard> {
+  int filledGlasses = 0;
+  final int totalGlasses = 4;
+  final int glassVolume = 6; // in fl oz
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +31,25 @@ class WaterTrackerCard extends StatelessWidget {
             // Top row (Water + More)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  'Water: 6 / 24 fl oz',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  'Water: ${filledGlasses * glassVolume} / ${totalGlasses * glassVolume} fl oz',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Text(
-                  'More',
-                  style: TextStyle(color: Colors.greenAccent, fontSize: 14),
+                InkWell(
+                  onTap: () => {
+                    setState(() {
+                      filledGlasses = 0;
+                    })
+                  },
+                  child: const Text(
+                    'Reset',
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
                 ),
               ],
             ),
@@ -40,8 +57,8 @@ class WaterTrackerCard extends StatelessWidget {
             // Glasses row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(4, (index) {
-                if (index == 0) {
+              children: List.generate(totalGlasses, (index) {
+                if (index < filledGlasses) {
                   // Filled glass
                   return Column(
                     children: [
@@ -53,39 +70,61 @@ class WaterTrackerCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.white),
                         ),
-                        child:
-                            Icon(Icons.wine_bar_rounded, color: Colors.white),
+                        child: const Icon(
+                          Icons.wine_bar_rounded,
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(height: 6),
-                      const Text('6 fl oz',
-                          style: TextStyle(color: Colors.white, fontSize: 12)),
+                      Text(
+                        '$glassVolume fl oz',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   );
-                } else if (index == 1) {
+                } else if (index == filledGlasses) {
                   // Plus glass
-                  return Column(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            '+',
-                            style: TextStyle(
+                  return GestureDetector(
+                    onTap: () {
+                      if (filledGlasses < totalGlasses) {
+                        setState(() {
+                          filledGlasses++;
+                        });
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '+',
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text('6 fl oz',
-                          style: TextStyle(color: Colors.white, fontSize: 12)),
-                    ],
+                        const SizedBox(height: 6),
+                        Text(
+                          '$glassVolume fl oz',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 } else {
                   // Empty glass
@@ -100,8 +139,13 @@ class WaterTrackerCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text('6 fl oz',
-                          style: TextStyle(color: Colors.white, fontSize: 12)),
+                      Text(
+                        '$glassVolume fl oz',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   );
                 }

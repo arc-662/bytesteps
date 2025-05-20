@@ -9,6 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('userBox');
+  await Hive.openBox('dailyAvg');
 
   // Check if user has already filled info
   final box = Hive.box('userBox');
