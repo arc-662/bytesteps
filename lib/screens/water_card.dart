@@ -45,7 +45,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                     setState(() {
                       filledGlasses = 0;
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Water Intake is Now 0")));
+                          SnackBar(content: Text("Water intake is now 0")));
                     })
                   },
                   child: const Text(

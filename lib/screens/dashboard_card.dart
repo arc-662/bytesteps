@@ -156,20 +156,20 @@ class _DashboardCardState extends State<DashboardCard> {
               ])
             ]),
             // 2nd Row to show Rounded Horizontal Progress Bar
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Obx(() => SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      height: 13,
-                      child: LinearProgressIndicator(
-                        value: controller.hpb.value,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                      ),
-                    )),
-              ),
-            ]),
+            // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            //   ClipRRect(
+            //     borderRadius: BorderRadius.circular(10),
+            //     child: Obx(() => SizedBox(
+            //           width: MediaQuery.of(context).size.width * 0.85,
+            //           height: 13,
+            //           child: LinearProgressIndicator(
+            //             value: controller.hpb.value,
+            //             backgroundColor: Colors.grey[300],
+            //             valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            //           ),
+            //         )),
+            //   ),
+            // ]),
             // 3rd to show Description of Distance Traveled, Calories Burn and Time Spent
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
