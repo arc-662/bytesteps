@@ -28,11 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bytesteps',
-      initialRoute: showDashboard ? '/dashboard' : '/user-info',
-      routes: {
-        '/dashboard': (context) => const Dashboard(),
-        '/user-info': (context) => const UserInfoScreen(),
-      },
+      home: showDashboard ? Dashboard() : UserInfoScreen(),
     );
   }
 }

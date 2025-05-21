@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 class DashboardController extends GetxController {
   final RxList<int> weeklySteps =
       <int>[359, 1962, 3565, 5168, 6771, 8374, 9999].obs;
+  final RxList<double> weeklyCalories =
+      <double>[120.5, 235.0, 348.3, 462.7, 589.9, 645.2, 750.0].obs;
   final RxList<int> monthlySteps = <int>[
     512,
     835,
@@ -35,9 +37,6 @@ class DashboardController extends GetxController {
     9220,
     9999
   ].obs;
-
-  final RxList<double> weeklyCalories =
-      <double>[120.5, 235.0, 348.3, 462.7, 589.9, 645.2, 750.0].obs;
 
   final RxList<double> monthlyCalories = <double>[
     120.5,
