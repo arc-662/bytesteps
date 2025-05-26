@@ -191,7 +191,7 @@ class AchievementBadge extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 badgeText,
                 style: TextStyle(
@@ -199,7 +199,7 @@ class AchievementBadge extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: badgeColor,
                 ),
-                overflow: TextOverflow.ellipsis,
+                softWrap: true,
               ),
             ),
             Icon(
