@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:bytesteps/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -33,7 +36,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     await box.put('gender', gender);
     await box.put('isUserInfoSaved', true);
 
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const Dashboard()));
   }
 
   @override
@@ -56,6 +60,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 decoration: InputDecoration(labelText: 'Height (inches)'),
                 keyboardType: TextInputType.number),
             DropdownButton<String>(
+              hint: Text('Select Gender'),
               value: gender,
               onChanged: (value) => setState(() => gender = value!),
               items: ['Male', 'Female', 'Other']
