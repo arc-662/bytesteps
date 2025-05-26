@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class WaterTrackerCard extends StatefulWidget {
   const WaterTrackerCard({super.key});
@@ -9,16 +10,79 @@ class WaterTrackerCard extends StatefulWidget {
 
 class _WaterTrackerCardState extends State<WaterTrackerCard> {
   int filledGlasses = 0;
-  final int totalGlasses = 4;
-  final int glassVolume = 6; // in fl oz
+  int waterGoal = 24; // default goal in fl oz
+  final int glassVolume = 6;
+
+  void _showWaterGoalPickerDialog() async {
+    int selectedValue = waterGoal;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Set Daily Water Goal"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Select amount (in fl oz)"),
+              const SizedBox(height: 10),
+              StatefulBuilder(
+                builder: (context, setDialogState) {
+                  return NumberPicker(
+                    value: selectedValue,
+                    minValue: 6,
+                    maxValue: 120,
+                    step: 6,
+                    axis: Axis.horizontal,
+                    onChanged: (value) {
+                      setDialogState(() => selectedValue = value);
+                    },
+                    textStyle: const TextStyle(color: Colors.grey),
+                    selectedTextStyle: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            ElevatedButton(
+              child: const Text("Save"),
+              onPressed: () {
+                setState(() {
+                  waterGoal = selectedValue;
+                  filledGlasses = 0; // reset on new goal
+                });
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text("Daily goal set to $selectedValue fl oz")),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    int totalGlasses = waterGoal ~/ glassVolume;
+    double progress = (filledGlasses * glassVolume) / waterGoal;
+    progress = progress.clamp(0.0, 1.0);
+
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.17,
+        height: MediaQuery.of(context).size.height * 0.25,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
           color: const Color(0xFA86C3FF),
@@ -28,130 +92,138 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top row (Water + More)
+            // Top row (Water + Set + Reset)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Water: ${filledGlasses * glassVolume} / ${totalGlasses * glassVolume} fl oz',
+                  'Water: ${filledGlasses * glassVolume} / $waterGoal fl oz',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                InkWell(
-                  onTap: () => {
-                    setState(() {
-                      filledGlasses = 0;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Water intake is now 0")));
-                    })
-                  },
-                  child: const Text(
-                    'Reset',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: _showWaterGoalPickerDialog,
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 12.0),
+                        child: Text(
+                          'Set',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          filledGlasses = 0;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Water intake is now 0")),
+                        );
+                      },
+                      child: const Text(
+                        'Reset',
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+
+            const SizedBox(height: 12),
+            // Progress bar
+            Center(
+              child: SizedBox(
+                height: 12.0,
+                width: 300.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6.0),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 12.0,
+                    backgroundColor: Colors.grey.shade300,
+                    color: Colors.purpleAccent,
                   ),
                 ),
-              ],
+              ),
             ),
             const SizedBox(height: 16),
             // Glasses row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(totalGlasses, (index) {
-                if (index < filledGlasses) {
-                  // Filled glass
-                  return Column(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.white),
-                        ),
-                        child: const Icon(
-                          Icons.wine_bar_rounded,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '$glassVolume fl oz',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  );
-                } else if (index == filledGlasses) {
-                  // Plus glass
-                  return GestureDetector(
-                    onTap: () {
-                      if (filledGlasses < totalGlasses) {
-                        setState(() {
-                          filledGlasses++;
-                        });
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '+',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(totalGlasses, (index) {
+                    if (index < filledGlasses) {
+                      return _buildGlass(
+                          filled: true, index: index, plus: false);
+                    } else if (index == filledGlasses) {
+                      return _buildGlass(
+                          filled: false, index: index, plus: true);
+                    } else {
+                      return _buildGlass(
+                          filled: false, index: index, plus: false);
+                    }
+                  }),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGlass(
+      {required bool filled, required int index, required bool plus}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: GestureDetector(
+        onTap: plus && filledGlasses < (waterGoal ~/ glassVolume)
+            ? () {
+                setState(() {
+                  filledGlasses++;
+                });
+              }
+            : null,
+        child: Column(
+          children: [
+            Container(
+              width: 40,
+              height: 50,
+              decoration: BoxDecoration(
+                color: filled ? Colors.blueAccent : null,
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: filled
+                    ? const Icon(Icons.wine_bar_rounded, color: Colors.white)
+                    : plus
+                        ? const Text(
+                            '+',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '$glassVolume fl oz',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  // Empty glass
-                  return Column(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '$glassVolume fl oz',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  );
-                }
-              }),
+                          )
+                        : null,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '$glassVolume fl oz',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
             ),
           ],
         ),

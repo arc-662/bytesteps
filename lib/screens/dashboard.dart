@@ -2,7 +2,6 @@ import 'package:bytesteps/screens/health_screen.dart';
 import 'package:bytesteps/screens/report_screen.dart';
 import 'package:bytesteps/screens/setting_screen.dart';
 import 'package:bytesteps/screens/home_screen.dart';
-import 'package:bytesteps/screens/test_report.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
