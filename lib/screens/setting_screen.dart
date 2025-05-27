@@ -158,6 +158,7 @@ class SettingScreen extends StatelessWidget {
                     trailing: SizedBox(
                       width: 100, // Adjust width as needed
                       child: DropdownButton<int>(
+                        dropdownColor: Colors.blue[50],
                         isDense: true,
                         underline:
                             const SizedBox(), // Removes the default underline

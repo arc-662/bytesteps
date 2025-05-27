@@ -43,33 +43,92 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('User Info')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Full Name')),
-            TextField(
-                controller: weightController,
-                decoration: InputDecoration(labelText: 'Weight (lbs)'),
-                keyboardType: TextInputType.number),
-            TextField(
-                controller: heightController,
-                decoration: InputDecoration(labelText: 'Height (inches)'),
-                keyboardType: TextInputType.number),
-            DropdownButton<String>(
-              hint: Text('Select Gender'),
-              value: gender,
-              onChanged: (value) => setState(() => gender = value!),
-              items: ['Male', 'Female', 'Other']
-                  .map((g) => DropdownMenuItem(value: g, child: Text(g)))
-                  .toList(),
+      appBar: AppBar(title: const Text('User Info')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.indigo.shade50,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.indigo.shade100,
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: saveUserData, child: Text('Continue')),
-          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Enter Your Information',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo.shade800,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: weightController,
+                  decoration: const InputDecoration(
+                    labelText: 'Weight (lbs)',
+                    prefixIcon: Icon(Icons.fitness_center),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: heightController,
+                  decoration: const InputDecoration(
+                    labelText: 'Height (inches)',
+                    prefixIcon: Icon(Icons.height),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 20),
+                InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Select Gender',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      hint: const Text('Select Gender'),
+                      value: gender,
+                      onChanged: (value) => setState(() => gender = value!),
+                      items: ['Male', 'Female', 'Other']
+                          .map(
+                            (g) => DropdownMenuItem(value: g, child: Text(g)),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: saveUserData,
+                  child: const Text('Continue'),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
