@@ -1,6 +1,8 @@
+import 'package:bytesteps/screens/dashboard_card.dart';
 import 'package:get/get.dart';
 
 class DashboardController extends GetxController {
+  DashboardCard dashboardCard = DashboardCard();
   final RxList<int> weeklySteps =
       <int>[359, 1962, 3565, 5168, 6771, 8374, 9999].obs;
   final RxList<double> weeklyCalories =
@@ -71,7 +73,6 @@ class DashboardController extends GetxController {
     750.0
   ].map((e) => e.isFinite ? e : 0.0).toList().obs;
 
-  final RxDouble hpb = 0.0.obs;
   final RxBool isStarted = false.obs;
   final RxDouble progress = 0.0.obs;
   final RxDouble distance = 0.0.obs;
@@ -81,11 +82,22 @@ class DashboardController extends GetxController {
   final RxString elapsedTime = "0".obs;
   final RxInt stepCount = 0.obs;
   final RxInt baseStepCount = 0.obs;
+  final RxInt selectedGoal = 1000.obs;
+  final List<int> goals = [
+    1000,
+    2000,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000
+  ];
 
   //method to reset all progress
   void resetProgress() {
     progress.value = 0.0;
-    hpb.value = 0.0;
     stepCount.value = 0;
     isStarted.value = false;
     distance.value = 0.0;

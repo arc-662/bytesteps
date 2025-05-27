@@ -90,8 +90,8 @@ class _DashboardCardState extends State<DashboardCard> {
     controller.stepCount.value = sessionSteps;
     controller.updateDistance();
 
-    controller.progress.value = (sessionSteps / 10000).clamp(0.0, 1.0);
-    controller.hpb.value = (sessionSteps / 10000).clamp(0.0, 1.0);
+    controller.progress.value =
+        (sessionSteps / controller.selectedGoal.value).clamp(0.0, 1.0);
   }
 
   @override
@@ -108,6 +108,23 @@ class _DashboardCardState extends State<DashboardCard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text(
+                        "Step Goal: ${controller.selectedGoal.value}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.white),
+                      ),
+                    ),
+                  ],
+                )),
             // 1st Row to show steps, button and ring progress bar
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Stack(alignment: Alignment.center, children: [
