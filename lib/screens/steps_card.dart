@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bytesteps/colors.dart';
 import 'package:bytesteps/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -97,14 +98,13 @@ class _DashboardCardState extends State<DashboardCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
         height: MediaQuery.of(context).size.height * 0.4,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
-            color: const Color(0xFA86C3FF),
-            borderRadius: BorderRadius.circular(10)),
+            color: lightBlue, borderRadius: BorderRadius.circular(10)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

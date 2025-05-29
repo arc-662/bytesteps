@@ -1,3 +1,4 @@
+import 'package:bytesteps/colors.dart';
 import 'package:bytesteps/screens/health_screen.dart';
 import 'package:bytesteps/screens/report_screen.dart';
 import 'package:bytesteps/screens/setting_screen.dart';
@@ -26,10 +27,10 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFFE0C3FC),
+        backgroundColor: greyColor,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white60,
+        selectedItemColor: Color(0xFA86C3FF),
+        unselectedItemColor: Colors.black,
         currentIndex: selectedIndex,
         onTap: (index) {
           setState(() {
@@ -44,14 +45,16 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       appBar: AppBar(
-        title: Text("ByteSteps"),
+        title: Text(
+          "ByteSteps",
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
-        backgroundColor: Color(0xFA86C3FF),
+        backgroundColor: greyColor,
         titleTextStyle: TextStyle(
           letterSpacing: 1,
           fontSize: 22,
           fontWeight: FontWeight.w600,
-          color: Colors.white,
         ),
       ),
       body: IndexedStack(

@@ -1,3 +1,4 @@
+import 'package:bytesteps/colors.dart';
 import 'package:flutter/material.dart';
 
 class WeeklyTrackerCard extends StatelessWidget {
@@ -22,15 +23,16 @@ class WeeklyTrackerCard extends StatelessWidget {
     final int todayUIIndex = weekdayToIndex[todayWeekday] ?? -1;
 
     return Card(
-      elevation: 5,
+      elevation: 3,
+      color: greyColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.17,
+        height: MediaQuery.of(context).size.height * 0.14,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
-          color: const Color(0xFA86C3FF),
+          //
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -40,7 +42,7 @@ class WeeklyTrackerCard extends StatelessWidget {
             const Text(
               'Daily average: 1225',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -59,16 +61,16 @@ class WeeklyTrackerCard extends StatelessWidget {
                           height: 32,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white),
+                            border: Border.all(color: blackColor),
                           ),
                         ),
                         if (index == todayUIIndex)
                           Container(
                             width: 9,
                             height: 9,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.greenAccent,
+                              color: lightBlue,
                             ),
                           ),
                       ],
@@ -77,7 +79,7 @@ class WeeklyTrackerCard extends StatelessWidget {
                     Text(
                       dayLetters[index],
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: blackColor,
                         fontSize: 14,
                       ),
                     ),

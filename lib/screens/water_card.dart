@@ -1,3 +1,4 @@
+import 'package:bytesteps/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
@@ -19,7 +20,10 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Set Daily Water Goal"),
+          title: const Text(
+            "Set Daily Water Goal",
+            style: TextStyle(color: blackColor),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -36,7 +40,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                     onChanged: (value) {
                       setDialogState(() => selectedValue = value);
                     },
-                    textStyle: const TextStyle(color: Colors.grey),
+                    textStyle: const TextStyle(color: Colors.purple),
                     selectedTextStyle: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -79,13 +83,13 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
     progress = progress.clamp(0.0, 1.0);
 
     return Card(
-      elevation: 5,
+      color: greyColor,
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.25,
+        height: MediaQuery.of(context).size.height * 0.19,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
-          color: const Color(0xFA86C3FF),
           borderRadius: BorderRadius.circular(10),
         ),
         padding: const EdgeInsets.all(12),
@@ -99,7 +103,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                 Text(
                   'Water: ${filledGlasses * glassVolume} / $waterGoal fl oz',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: blackColor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -112,7 +116,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                         padding: EdgeInsets.only(right: 12.0),
                         child: Text(
                           'Set',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          style: TextStyle(color: blackColor, fontSize: 14),
                         ),
                       ),
                     ),
@@ -128,7 +132,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                       },
                       child: const Text(
                         'Reset',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: blackColor, fontSize: 14),
                       ),
                     ),
                   ],
@@ -148,7 +152,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                     value: progress,
                     minHeight: 12.0,
                     backgroundColor: Colors.grey.shade300,
-                    color: Colors.purpleAccent,
+                    color: lightBlue,
                   ),
                 ),
               ),
@@ -198,8 +202,8 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
               width: 40,
               height: 50,
               decoration: BoxDecoration(
-                color: filled ? Colors.blueAccent : null,
-                border: Border.all(color: Colors.white),
+                color: filled ? lightBlue : null,
+                border: Border.all(color: blackColor),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
@@ -209,7 +213,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
                         ? const Text(
                             '+',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: blackColor,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -221,7 +225,7 @@ class _WaterTrackerCardState extends State<WaterTrackerCard> {
             Text(
               '$glassVolume fl oz',
               style: const TextStyle(
-                color: Colors.white,
+                color: blackColor,
                 fontSize: 12,
               ),
             ),

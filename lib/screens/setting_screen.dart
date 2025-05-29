@@ -1,3 +1,4 @@
+import 'package:bytesteps/colors.dart';
 import 'package:bytesteps/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,7 +26,7 @@ class SettingScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              color: Colors.lightBlue[100],
+              color: lightBlue,
               elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -78,8 +79,7 @@ class SettingScreen extends StatelessWidget {
                         ElevatedButton(
                             autofocus: true,
                             style: ElevatedButton.styleFrom(
-                                elevation: 2,
-                                backgroundColor: Colors.amberAccent),
+                                elevation: 2, backgroundColor: yellowColor),
                             onPressed: () {},
                             child: Text(
                               "Edit Profile",
@@ -97,7 +97,7 @@ class SettingScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: Card(
-              color: Colors.lightBlue[100],
+              color: lightBlue,
               child: ListTile(
                 leading: Icon(Icons.refresh,
                     color: const Color.fromRGBO(13, 71, 161, 1)),
@@ -120,7 +120,7 @@ class SettingScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: lightBlue,
                           ),
                           onPressed: () {
                             Navigator.pop(context);
@@ -144,7 +144,7 @@ class SettingScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: Card(
-                color: Colors.lightBlue[100],
+                color: lightBlue,
                 child: Obx(
                   () => ListTile(
                     leading: const FaIcon(
@@ -181,7 +181,7 @@ class SettingScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Card(
-              color: Colors.lightBlue[100],
+              color: lightBlue,
               child: ListTile(
                 leading: Icon(
                   Icons.system_update,
