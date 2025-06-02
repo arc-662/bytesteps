@@ -11,7 +11,7 @@ void main() async {
   await Hive.openBox('userBox');
   await Hive.openBox('dailyAvg');
 
-  // Check if user has already filled info
+  // to Check if user has already filled info
   final box = Hive.box('userBox');
   bool isUserInfoSaved = box.get('isUserInfoSaved', defaultValue: false);
 

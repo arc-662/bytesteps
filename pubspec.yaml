@@ -42,6 +42,7 @@ dependencies:
   pedometer: ^4.1.1
   permission_handler: ^12.0.0+1
   scaffold_gradient_background: ^1.0.3+1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3

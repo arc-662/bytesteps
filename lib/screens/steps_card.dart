@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bytesteps/colors.dart';
 import 'package:bytesteps/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -104,7 +103,11 @@ class _DashboardCardState extends State<DashboardCard> {
         height: MediaQuery.of(context).size.height * 0.4,
         width: MediaQuery.of(context).size.width * 0.92,
         decoration: BoxDecoration(
-            color: lightBlue, borderRadius: BorderRadius.circular(10)),
+            gradient: LinearGradient(
+                colors: [Colors.lightBlue.shade400, Colors.blueAccent],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter),
+            borderRadius: BorderRadius.circular(10)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

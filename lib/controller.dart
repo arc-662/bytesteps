@@ -1,4 +1,4 @@
-import 'package:bytesteps/screens/dashboard_card.dart';
+import 'package:bytesteps/screens/steps_card.dart';
 import 'package:get/get.dart';
 
 class DashboardController extends GetxController {
