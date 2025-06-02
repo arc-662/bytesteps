@@ -71,7 +71,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         fontSize: 32,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 4),
-                Text('Welcome Back',
+                Text('Welcome To ByteSteps',
                     style: TextStyle(color: Colors.white70, fontSize: 16)),
               ],
             ),
