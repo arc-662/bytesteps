@@ -107,6 +107,29 @@ class DashboardController extends GetxController {
   void onInit() {
     super.onInit();
     startMidnightSaver();
+    loadWeeklyStepsFromHive();
+  }
+
+  void loadWeeklyStepsFromHive() {
+    final box = Hive.box('stepBox');
+    final List<String> weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
+
+    final List<int> steps = [];
+    for (var day in weekdays) {
+      final int value = box.get(day, defaultValue: 0);
+      steps.add(value);
+    }
+
+    weeklySteps.value = steps;
+    print("Loaded weekly steps from Hive: $steps");
   }
 
   void startMidnightSaver() {
