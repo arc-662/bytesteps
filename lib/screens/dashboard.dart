@@ -29,7 +29,7 @@ class _DashboardState extends State<Dashboard> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: greyColor,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Color(0xFA86C3FF),
+        selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Colors.black,
         currentIndex: selectedIndex,
         onTap: (index) {

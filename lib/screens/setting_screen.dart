@@ -55,48 +55,52 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   Card(
-                    color: whiteColor,
-                    elevation: 4,
+                    elevation: 6,
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    shadowColor: Colors.grey.shade300,
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Stack(
                             children: [
-                              // Profile Image
                               CircleAvatar(
-                                radius: 45,
-                                backgroundColor: Colors.grey.shade300,
+                                radius: 50,
+                                backgroundColor: Colors.grey.shade200,
                                 backgroundImage: profileImage != null
                                     ? FileImage(profileImage!)
-                                    : AssetImage("assets/images/profile.png")
+                                    : const AssetImage(
+                                            "assets/images/profile.png")
                                         as ImageProvider,
                               ),
-
-                              // Edit Icon (bottom right)
                               Positioned(
-                                bottom: 0,
+                                bottom: 4,
                                 right: 4,
                                 child: GestureDetector(
                                   onTap: () async {
                                     await pickImageFromGallery();
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: Colors.blue,
+                                      color: Colors.blueAccent,
                                       shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 4,
+                                        )
+                                      ],
                                       border: Border.all(
-                                        color: Colors.white,
-                                        width: 2,
-                                      ),
+                                          color: Colors.white, width: 2),
                                     ),
-                                    child: Icon(
+                                    padding: const EdgeInsets.all(6),
+                                    child: const Icon(
                                       Icons.edit,
-                                      size: 20,
+                                      size: 18,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -104,48 +108,92 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 14),
                           Text(
                             name,
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          const Text("abc.SergeyBrin@gmail.com",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey)),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "abc.SergeyBrin@gmail.com",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text("Height: $height in",
-                                  style: const TextStyle(fontSize: 14)),
-                              Text("Weight: $weight lbs",
-                                  style: const TextStyle(fontSize: 14)),
+                              Column(
+                                children: [
+                                  const Text(
+                                    "Height",
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Text(
+                                    "$height inches",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text(
+                                    "Weight",
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Text(
+                                    "$weight lbs",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text(
+                                    "Gender",
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Text(
+                                    gender,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Text("Gender: $gender",
-                              style: const TextStyle(fontSize: 14)),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditScreen()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditScreen()),
+                              );
                             },
+                            icon: const Icon(Icons.edit,
+                                size: 18, color: Colors.black),
+                            label: const Text(
+                              "Edit Profile",
+                              style: TextStyle(color: Colors.black),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yellowColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                              elevation: 0,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
-                            child: const Text("Edit Profile",
-                                style: TextStyle(color: Colors.black)),
-                          )
+                          ),
                         ],
                       ),
                     ),

@@ -10,7 +10,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // bool isVisible = false;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -25,7 +24,6 @@ class HomeScreen extends StatelessWidget {
                       onDismissed: (direction) {
                         isVisible = false;
                       },
-                      background: Container(color: Colors.redAccent),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
@@ -42,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               'Welcome Back!',
                               style: TextStyle(

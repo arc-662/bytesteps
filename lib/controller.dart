@@ -1,12 +1,16 @@
-import 'package:bytesteps/screens/steps_card.dart';
+import 'dart:async';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:bytesteps/screens/steps_card.dart';
 
 class DashboardController extends GetxController {
   DashboardCard dashboardCard = DashboardCard();
+
   final RxList<int> weeklySteps =
       <int>[359, 1962, 3565, 5168, 6771, 8374, 9999].obs;
   final RxList<double> weeklyCalories =
       <double>[120.5, 235.0, 348.3, 462.7, 589.9, 645.2, 750.0].obs;
+
   final RxList<int> monthlySteps = <int>[
     512,
     835,
@@ -37,7 +41,7 @@ class DashboardController extends GetxController {
     7710,
     8450,
     9220,
-    9999
+    9999,
   ].obs;
 
   final RxList<double> monthlyCalories = <double>[
@@ -83,6 +87,8 @@ class DashboardController extends GetxController {
   final RxInt stepCount = 0.obs;
   final RxInt baseStepCount = 0.obs;
   final RxInt selectedGoal = 1000.obs;
+  // final RxInt isMax
+
   final List<int> goals = [
     1000,
     2000,
@@ -95,7 +101,49 @@ class DashboardController extends GetxController {
     9000
   ];
 
-  //method to reset all progress
+  Timer? _midnightTimer;
+
+  @override
+  void onInit() {
+    super.onInit();
+    startMidnightSaver();
+  }
+
+  void startMidnightSaver() {
+    print("Mid-Night Counter is Started");
+    _midnightTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      final now = DateTime.now();
+      if (now.hour == 0 && now.minute == 0) {
+        saveStepsToHive();
+      }
+    });
+  }
+
+  void saveStepsToHive() {
+    final box = Hive.box('stepBox');
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final String weekday = _weekdayName(yesterday.weekday);
+
+    box.put(weekday, stepCount.value);
+    print("✅ Saved ${stepCount.value} steps for $weekday");
+
+    // Optional: Reset today's steps
+    stepCount.value = 0;
+  }
+
+  String _weekdayName(int weekday) {
+    const weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
+    return weekdays[weekday - 1];
+  }
+
   void resetProgress() {
     progress.value = 0.0;
     stepCount.value = 0;
@@ -114,5 +162,11 @@ class DashboardController extends GetxController {
   void updateCalories() {
     double kilometers = distance.value * 1.6034;
     calories.value = kilometers * weight.value * 1.036;
+  }
+
+  @override
+  void onClose() {
+    _midnightTimer?.cancel();
+    super.onClose();
   }
 }

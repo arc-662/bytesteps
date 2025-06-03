@@ -10,6 +10,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('userBox');
   await Hive.openBox('dailyAvg');
+  await Hive.openBox('stepBox');
 
   // to Check if user has already filled info
   final box = Hive.box('userBox');
