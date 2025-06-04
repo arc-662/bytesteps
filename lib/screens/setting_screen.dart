@@ -19,6 +19,17 @@ class _SettingScreenState extends State<SettingScreen> {
   final DashboardController controller = Get.find();
 
   File? profileImage;
+  @override
+  void initState() {
+    super.initState();
+    final userBox = Hive.box('userBox');
+    final savedImagePath = userBox.get('profileImagePath', defaultValue: null);
+    if (savedImagePath != null) {
+      setState(() {
+        profileImage = File(savedImagePath);
+      });
+    }
+  }
 
   Future<void> pickImageFromGallery() async {
     final ImagePicker picker = ImagePicker();
@@ -28,8 +39,10 @@ class _SettingScreenState extends State<SettingScreen> {
       setState(() {
         profileImage = File(pickedFile.path);
       });
+      // Save the path to Hive
+      final userBox = Hive.box('userBox');
+      await userBox.put('profileImagePath', pickedFile.path);
     }
-    return;
   }
 
   @override

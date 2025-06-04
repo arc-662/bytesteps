@@ -48,8 +48,53 @@ class ReportScreen extends StatelessWidget {
             final monthlySteps = controller.monthlySteps;
             final monthlyCalories = controller.monthlyCalories;
 
+            // Check if weekly data is missing
+            if (weeklySteps.isEmpty || weeklyCalories.isEmpty) {
+              return const Center(
+                child: Text(
+                  "Weekly data will appear after your steps are saved at 12 PM.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
+
+            // Check if monthly data is missing
+            if (monthlySteps.isEmpty || monthlyCalories.isEmpty) {
+              return const Center(
+                child: Text(
+                  "Monthly data will be shown once steps data is saved during the month.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
+
             final int weeklyBarCount = weeklySteps.length;
             final int monthlyBarCount = currentMonthIndex;
+
+            final weeklyCombinedList = [
+              ...weeklySteps,
+              ...weeklyCalories.map((c) => c.toInt())
+            ];
+            final weeklyMaxValue = weeklyCombinedList.isNotEmpty
+                ? weeklyCombinedList.reduce((a, b) => a > b ? a : b)
+                : 0;
+
+            final monthlyStepsSublist = monthlySteps.length >= monthlyBarCount
+                ? monthlySteps.sublist(0, monthlyBarCount)
+                : [];
+            final monthlyCaloriesSublist =
+                monthlyCalories.length >= monthlyBarCount
+                    ? monthlyCalories.sublist(0, monthlyBarCount)
+                    : [];
+            final monthlyCombinedList = [
+              ...monthlyStepsSublist,
+              ...monthlyCaloriesSublist.map((c) => c.toInt())
+            ];
+            final monthlyMaxValue = monthlyCombinedList.isNotEmpty
+                ? monthlyCombinedList.reduce((a, b) => a > b ? a : b)
+                : 0;
 
             return SingleChildScrollView(
               child: Column(
@@ -64,12 +109,7 @@ class ReportScreen extends StatelessWidget {
                     height: 300,
                     child: BarChart(
                       BarChartData(
-                        maxY: ([
-                                  ...weeklySteps,
-                                  ...weeklyCalories.map((c) => c.toInt())
-                                ].reduce((a, b) => a > b ? a : b) *
-                                1.2)
-                            .toDouble(),
+                        maxY: (weeklyMaxValue * 1.2).toDouble(),
                         barGroups: List.generate(weeklyBarCount, (index) {
                           return BarChartGroupData(
                             x: index,
@@ -143,14 +183,7 @@ class ReportScreen extends StatelessWidget {
                     height: 350,
                     child: BarChart(
                       BarChartData(
-                        maxY: ([
-                                  ...monthlySteps.sublist(0, monthlyBarCount),
-                                  ...monthlyCalories
-                                      .sublist(0, monthlyBarCount)
-                                      .map((c) => c.toInt())
-                                ].reduce((a, b) => a > b ? a : b) *
-                                1.2)
-                            .toDouble(),
+                        maxY: (monthlyMaxValue * 1.2).toDouble(),
                         barGroups: List.generate(monthlyBarCount, (index) {
                           return BarChartGroupData(
                             x: index,

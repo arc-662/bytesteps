@@ -13,6 +13,7 @@ void main() async {
   await Hive.openBox('dailyAvg');
   Hive.registerAdapter(StepEntryAdapter());
   await Hive.openBox<StepEntry>('stepsBox');
+  await Hive.openBox('userBox');
 
   // to Check if user has already filled info
   final box = Hive.box('userBox');
