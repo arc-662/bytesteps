@@ -149,7 +149,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         fontSize: 12, color: Colors.grey),
                                   ),
                                   Text(
-                                    "$weight lbs",
+                                    weight.toStringAsFixed(2),
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ],

@@ -14,18 +14,21 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final weightController = TextEditingController();
   final heightController = TextEditingController();
   String gender = 'Male';
+  bool isKg = false; // false = lbs, true = kg
 
   void saveUserData() async {
     final name = nameController.text.trim();
-    final weight = double.tryParse(weightController.text.trim());
+    final weightInput = double.tryParse(weightController.text.trim());
     final height = double.tryParse(heightController.text.trim());
 
-    if (name.isEmpty || weight == null || height == null) {
+    if (name.isEmpty || weightInput == null || height == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter valid information.')),
       );
       return;
     }
+
+    final weight = isKg ? weightInput * 2.20462 : weightInput; // Convert to lbs
 
     final box = Hive.box('userBox');
     await box.put('name', name);
@@ -108,14 +111,55 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    TextField(
-                      controller: weightController,
-                      decoration: const InputDecoration(
-                        labelText: 'Weight (lbs)',
-                        prefixIcon: Icon(Icons.fitness_center),
-                      ),
-                      keyboardType: TextInputType.number,
+
+                    // Weight input with toggle
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: weightController,
+                            decoration: InputDecoration(
+                              labelText: 'Weight (${isKg ? "kg" : "lbs"})',
+                              prefixIcon: const Icon(Icons.fitness_center),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlue[100],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ToggleButtons(
+                            borderRadius: BorderRadius.circular(20),
+                            isSelected: [isKg, !isKg],
+                            onPressed: (index) {
+                              setState(() {
+                                isKg = index == 0;
+                              });
+                            },
+                            selectedColor: Colors.black,
+                            fillColor: Colors.white,
+                            color: Colors.white,
+                            constraints: const BoxConstraints(
+                                minWidth: 40, minHeight: 36),
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                child: Text("kg"),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                child: Text("lbs"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+
                     const SizedBox(height: 16),
                     TextField(
                       controller: heightController,

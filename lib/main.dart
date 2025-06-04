@@ -1,6 +1,7 @@
 import 'package:bytesteps/controller.dart';
 import 'package:bytesteps/screens/dashboard.dart';
-import 'package:bytesteps/screens/user_info_screen.dart';
+import 'package:bytesteps/screens/login.dart';
+import 'package:bytesteps/step_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -10,7 +11,8 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('userBox');
   await Hive.openBox('dailyAvg');
-  await Hive.openBox('stepBox');
+  Hive.registerAdapter(StepEntryAdapter());
+  await Hive.openBox<StepEntry>('stepsBox');
 
   // to Check if user has already filled info
   final box = Hive.box('userBox');

@@ -44,6 +44,7 @@ class ReportScreen extends StatelessWidget {
           child: Obx(() {
             final weeklySteps = controller.weeklySteps;
             final weeklyCalories = controller.weeklyCalories;
+
             final monthlySteps = controller.monthlySteps;
             final monthlyCalories = controller.monthlyCalories;
 

@@ -1,82 +1,11 @@
-import 'dart:async';
+import 'package:bytesteps/step_entry.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:bytesteps/screens/steps_card.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class DashboardController extends GetxController {
   DashboardCard dashboardCard = DashboardCard();
-
-  final RxList<int> weeklySteps =
-      <int>[359, 1962, 3565, 5168, 6771, 8374, 9999].obs;
-  final RxList<double> weeklyCalories =
-      <double>[120.5, 235.0, 348.3, 462.7, 589.9, 645.2, 750.0].obs;
-
-  final RxList<int> monthlySteps = <int>[
-    512,
-    835,
-    1102,
-    1324,
-    1580,
-    1867,
-    2104,
-    2390,
-    2678,
-    2980,
-    3256,
-    3534,
-    3860,
-    4125,
-    4378,
-    4650,
-    4912,
-    5190,
-    5476,
-    5760,
-    6034,
-    6320,
-    6587,
-    6875,
-    7160,
-    7435,
-    7710,
-    8450,
-    9220,
-    9999,
-  ].obs;
-
-  final RxList<double> monthlyCalories = <double>[
-    120.5,
-    138.0,
-    152.3,
-    165.7,
-    178.9,
-    192.6,
-    205.3,
-    219.0,
-    231.4,
-    248.6,
-    263.5,
-    278.9,
-    294.2,
-    309.8,
-    325.0,
-    342.7,
-    359.4,
-    376.1,
-    393.7,
-    410.5,
-    428.0,
-    445.6,
-    463.2,
-    481.9,
-    500.0,
-    518.7,
-    580.0,
-    645.3,
-    698.9,
-    750.0
-  ].map((e) => e.isFinite ? e : 0.0).toList().obs;
-
+  // Declaring variables
   final RxBool isStarted = false.obs;
   final RxDouble progress = 0.0.obs;
   final RxDouble distance = 0.0.obs;
@@ -87,8 +16,13 @@ class DashboardController extends GetxController {
   final RxInt stepCount = 0.obs;
   final RxInt baseStepCount = 0.obs;
   final RxInt selectedGoal = 1000.obs;
-  // final RxInt isMax
+  List<int> get weeklySteps =>
+      getLast7DaysSteps().map((entry) => entry.stepCount).toList();
 
+  List<int> get monthlySteps =>
+      getLast30DaysSteps().map((entry) => entry.stepCount).toList();
+  //
+  // list to store the list of Steps Goal
   final List<int> goals = [
     1000,
     2000,
@@ -100,73 +34,13 @@ class DashboardController extends GetxController {
     8000,
     9000
   ];
-
-  Timer? _midnightTimer;
-
   @override
   void onInit() {
+    scheduleDailyStepSave();
     super.onInit();
-    startMidnightSaver();
-    loadWeeklyStepsFromHive();
   }
 
-  void loadWeeklyStepsFromHive() {
-    final box = Hive.box('stepBox');
-    final List<String> weekdays = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ];
-
-    final List<int> steps = [];
-    for (var day in weekdays) {
-      final int value = box.get(day, defaultValue: 0);
-      steps.add(value);
-    }
-
-    weeklySteps.value = steps;
-    print("Loaded weekly steps from Hive: $steps");
-  }
-
-  void startMidnightSaver() {
-    print("Mid-Night Counter is Started");
-    _midnightTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      final now = DateTime.now();
-      if (now.hour == 0 && now.minute == 0) {
-        saveStepsToHive();
-      }
-    });
-  }
-
-  void saveStepsToHive() {
-    final box = Hive.box('stepBox');
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    final String weekday = _weekdayName(yesterday.weekday);
-
-    box.put(weekday, stepCount.value);
-    print("✅ Saved ${stepCount.value} steps for $weekday");
-
-    // Optional: Reset today's steps
-    stepCount.value = 0;
-  }
-
-  String _weekdayName(int weekday) {
-    const weekdays = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ];
-    return weekdays[weekday - 1];
-  }
-
+  // Method to reset all set values
   void resetProgress() {
     progress.value = 0.0;
     stepCount.value = 0;
@@ -176,20 +50,97 @@ class DashboardController extends GetxController {
     elapsedTime.value = "0";
   }
 
+  // Method to update distance
   void updateDistance() {
     double meters = stepCount.value * stepLength.value;
     distance.value = meters / 1609.34;
     updateCalories();
   }
 
+  // Method to calculate Calories
   void updateCalories() {
     double kilometers = distance.value * 1.6034;
     calories.value = kilometers * weight.value * 1.036;
   }
 
-  @override
-  void onClose() {
-    _midnightTimer?.cancel();
-    super.onClose();
+  // Method to schedule the timer to save today's steps in box exactly at 11:59
+  void scheduleDailyStepSave() {
+    final now = DateTime.now();
+    final targetTime = DateTime(now.year, now.month, now.day, 23, 59);
+    Duration delay;
+
+    if (now.isBefore(targetTime)) {
+      delay = targetTime.difference(now);
+    } else {
+      // If it's already past 11:59 today, schedule for tomorrow
+      final tomorrowTarget = targetTime.add(Duration(days: 1));
+      delay = tomorrowTarget.difference(now);
+    }
+
+    Future.delayed(delay, () async {
+      await saveDailySteps(stepCount.value);
+      // Re-schedule for the next day
+      scheduleDailyStepSave();
+    });
+  }
+
+  // Method to save Daily Steps with date to Hive
+  Future<void> saveDailySteps(int steps) async {
+    final box = Hive.box<StepEntry>('stepsBox');
+    DateTime today = DateTime.now();
+
+    // Putting check if entry for today already exists
+    final existing = box.values.firstWhere(
+      (entry) => isSameDate(entry.date, today),
+      orElse: () => StepEntry(date: today, stepCount: 0),
+    );
+
+    if (existing.key != null) {
+      existing.stepCount = steps;
+      existing.save();
+    } else {
+      box.add(StepEntry(date: today, stepCount: steps));
+    }
+  }
+
+  // Method to compare date with today's date
+  bool isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  // Method to get last 7 day's steps from Hive
+  List<StepEntry> getLast7DaysSteps() {
+    final box = Hive.box<StepEntry>('stepsBox');
+    final DateTime now = DateTime.now();
+    final DateTime weekAgo = now.subtract(Duration(days: 7));
+
+    return box.values.where((entry) => entry.date.isAfter(weekAgo)).toList()
+      ..sort((a, b) => a.date.compareTo(b.date)); // sorting and updating
+  }
+
+  // Method to get last 30 day's steps from Hive
+  List<StepEntry> getLast30DaysSteps() {
+    final box = Hive.box<StepEntry>('stepsBox');
+    final DateTime now = DateTime.now();
+    final DateTime monthAgo = now.subtract(Duration(days: 30));
+
+    return box.values.where((entry) => entry.date.isAfter(monthAgo)).toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
+  }
+
+  List<double> get weeklyCalories {
+    return getLast7DaysSteps().map((entry) {
+      double miles = entry.stepCount * stepLength.value / 1609.34;
+      double kilometers = miles * 1.6034;
+      return kilometers * weight.value * 1.036;
+    }).toList();
+  }
+
+  List<double> get monthlyCalories {
+    return getLast30DaysSteps().map((entry) {
+      double miles = entry.stepCount * stepLength.value / 1609.34;
+      double kilometers = miles * 1.6034;
+      return kilometers * weight.value * 1.036;
+    }).toList();
   }
 }
