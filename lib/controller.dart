@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:bytesteps/step_entry.dart';
 import 'package:get/get.dart';
 import 'package:bytesteps/screens/steps_card.dart';
@@ -36,7 +37,7 @@ class DashboardController extends GetxController {
   ];
   @override
   void onInit() {
-    scheduleDailyStepSave();
+    scheduleDailyStepSaveAlarm();
     super.onInit();
   }
 
@@ -64,47 +65,43 @@ class DashboardController extends GetxController {
   }
 
   // Method to schedule the timer to save today's steps in box exactly at 11:59
-  void scheduleDailyStepSave() {
+  void scheduleDailyStepSaveAlarm() async {
     final now = DateTime.now();
-    final targetTime = DateTime(now.year, now.month, now.day, 23, 59);
-    Duration delay;
-
-    if (now.isBefore(targetTime)) {
-      delay = targetTime.difference(now);
-    } else {
-      // If it's already past 11:59 today, schedule for tomorrow
-      final tomorrowTarget = targetTime.add(Duration(days: 1));
-      delay = tomorrowTarget.difference(now);
-    }
-
-    Future.delayed(delay, () async {
-      await saveDailySteps(stepCount.value);
-      // Re-schedule for the next day
-      scheduleDailyStepSave();
-    });
+    final targetTime = DateTime(now.year, now.month, now.day, 2, 10);
+    final startAt = now.isAfter(targetTime)
+        ? targetTime.add(const Duration(days: 1))
+        : targetTime;
+    await AndroidAlarmManager.periodic(
+        const Duration(days: 1), 1122, saveStepsBackground,
+        startAt: startAt, exact: true, wakeup: true, rescheduleOnReboot: true);
   }
 
   // Method to save Daily Steps with date to Hive
-  Future<void> saveDailySteps(int steps) async {
-    final box = Hive.box<StepEntry>('stepsBox');
-    DateTime today = DateTime.now();
+  static Future<void> saveStepsBackground() async {
+    final box = await Hive.openBox<StepEntry>('stepsBox');
+    final cacheBox =
+        await Hive.openBox('cacheBox'); // box to store latest step count
 
-    // Putting check if entry for today already exists
+    final DateTime today = DateTime.now();
+    final int savedSteps = cacheBox.get('latestStepCount', defaultValue: 0);
+
     final existing = box.values.firstWhere(
       (entry) => isSameDate(entry.date, today),
-      orElse: () => StepEntry(date: today, stepCount: 0),
+      orElse: () => StepEntry(date: today, stepCount: savedSteps),
     );
 
     if (existing.key != null) {
-      existing.stepCount = steps;
-      existing.save();
+      existing.stepCount = savedSteps;
+      await existing.save();
     } else {
-      box.add(StepEntry(date: today, stepCount: steps));
+      await box.add(StepEntry(date: today, stepCount: savedSteps));
     }
+
+    print('✅ Steps auto-saved: $savedSteps at ${today.toIso8601String()}');
   }
 
   // Method to compare date with today's date
-  bool isSameDate(DateTime a, DateTime b) {
+  static bool isSameDate(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 

@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:bytesteps/controller.dart';
 import 'package:bytesteps/screens/dashboard.dart';
 import 'package:bytesteps/screens/login.dart';
@@ -14,6 +15,7 @@ void main() async {
   Hive.registerAdapter(StepEntryAdapter());
   await Hive.openBox<StepEntry>('stepsBox');
   await Hive.openBox('userBox');
+  await AndroidAlarmManager.initialize();
 
   // to Check if user has already filled info
   final box = Hive.box('userBox');
